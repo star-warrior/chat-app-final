@@ -461,9 +461,9 @@ window.selectPL = (plNumber, description, status) => {
             }
 
             let deleteBtn = "";
-            if (m.uid === CURRENT_USER_ID && !m.isDeleted) {
-                const timeDiff = Date.now() - m.timestamp;
-                if (timeDiff < 2 * 60 * 1000) deleteBtn = `<span id="btn-${m.timestamp}" class="msg-delete-btn" data-ts="${m.timestamp}" onclick="deleteMessage('${doc.id}', '${plNumber}', ${m.timestamp}, 'btn-${m.timestamp}')">🗑️</span>`;
+            const isAdmin = ADMIN_EMAILS.includes(CURRENT_USER_EMAIL);
+            if ((m.uid === CURRENT_USER_ID || isAdmin) && !m.isDeleted) {
+                deleteBtn = `<span id="btn-${m.timestamp}" class="msg-delete-btn" onclick="deleteMessage('${doc.id}', '${plNumber}', ${m.timestamp}, 'btn-${m.timestamp}')">🗑️</span>`;
             }
 
             const timeHtml = `<span class="msg-time">${formatTime(m.timestamp)}${deleteBtn}</span>`;
@@ -474,8 +474,16 @@ window.selectPL = (plNumber, description, status) => {
     });
 };
 
-window.deleteMessage = async (msgId, plId, timestamp, btnId) => { if (Date.now() - timestamp > 2 * 60 * 1000) { alert("Time limit exceeded."); document.getElementById(btnId).style.display = 'none'; return; } if (!confirm("Delete?")) return; await db.collection("PLs").doc(plId).collection("Messages").doc(msgId).update({ isDeleted: true, text: "Deleted" }); recalcChannelStatus(plId); };
-setInterval(() => { document.querySelectorAll('.msg-delete-btn').forEach(btn => { if (Date.now() - parseInt(btn.getAttribute('data-ts')) > 2 * 60 * 1000) btn.style.display = 'none'; }); }, 1000);
+window.deleteMessage = async (msgId, plId, timestamp, btnId) => {
+    if (!confirm("Delete this message?")) return;
+    await db.collection("PLs").doc(plId).collection("Messages").doc(msgId).update({
+        isDeleted: true,
+        text: "🚫 This message was deleted",
+        imageUrl: null
+    });
+    recalcChannelStatus(plId);
+};
+// setInterval removed as time limit check is no longer needed
 
 async function recalcChannelStatus(plId) {
     const snap = await db.collection("PLs").doc(plId).collection("Messages").orderBy("timestamp", "desc").limit(20).get();
