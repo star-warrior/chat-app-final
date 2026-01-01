@@ -1,4 +1,6 @@
 .vercel
+dist
+
 # Dependencies
 /node_modules
 

@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "description": "Western Railway Procurement Chat App",
   "scripts": {
-    "start": "serve ."
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "serve dist"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
     "serve": "^14.2.0"
+  },
+  "devDependencies": {
+    "vite": "^7.3.0"
   }
 }
