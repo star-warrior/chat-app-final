@@ -42,15 +42,34 @@ A collaborative real-time chat and management system designed for the Western Ra
    npm install
    ```
 
-3. **Configure Firebase**
-   - Ensure `firebase-config.js` is set up with your project's credentials.
-   - Use `.env` file for sensitive keys if applicable.
+3. **Configure Environment Variables**
+   - Create a `.env` file in the root directory.
+   - Copy the keys from `.env.example` and fill in your Firebase credentials:
+   ```env
+   VITE_FIREBASE_API_KEY=your_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_domain
+   ...
+   ```
 
 4. **Run the Application**
    ```bash
-   npm start
+   npm run dev
    ```
-   This runs `npx serve .` to serve the static files.
+   This starts the local development server at `http://localhost:5173`.
+
+5. **Build for Production**
+   ```bash
+   npm run build
+   ```
+   
+## ☁️ Deployment (Vercel)
+
+Since `.env` is gitignored, you must add environment variables manually in Vercel:
+
+1. Import project to Vercel.
+2. Go to **Settings** > **Environment Variables**.
+3. Add all variables from your `.env` file (e.g., `VITE_FIREBASE_API_KEY`).
+4. Redeploy the application.
 
 ## Workflow Guide
 
